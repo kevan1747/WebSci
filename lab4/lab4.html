@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Lab 4</title>
+    <link rel="stylesheet" type="text/css" href="lab4.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  </head>
+
+  <body>
+    <div data-role="page">
+      <div data-role="header">
+        <h1>Tweet Ticker</h1>
+      </div>
+      <div class="wrapper">
+        <ul id="tweets"></ul> <!--List for tweet text-->
+        <ul id="hashtags"></ul> <!--List for hashtag text-->
+      </div>
+    </div>
+
+  <script>
+    //Processing the JSON
+    $(document).ready(function() {
+      $.get("tweets.json", function(data){
+	    $.each(data, function(i, tweet){
+		  $("#tweets").append("<li>" + tweet.text + "</li>");  //Go through each tweet and add the text to the tweets list as a list item
+		  $.each(tweet.entities.hashtags, function(i, hash){
+		    $("#hashtags").append("<li>#" + hash.text + "</li>");  //Go through the hashtag and add the text to the hashtags list as a list item.
+		  });
+	    });
+        //Displaying the Tweets
+		var tweet_li = $('#tweets li');
+		tweet_len = tweet_li.length;
+		for(var i=0; i<tweet_len; i++){
+		  tweet_li.eq(i).delay(i*3000).fadeIn(); //After every 3 seconds a new tweet fades in
+		  tweet_li.eq(i).delay(14500).animate({  //After 15 seconds a tweet is removed, keeping 5 tweets visible
+		    marginLeft:'-=300px', //Tweet separates to the left
+			opacity:0  //Tweet disappears
+		  }, 500).fadeOut();  //Tweet fades out from list
+		}
+		//Displaying the Hashtags
+		var hash_li = $('#hashtags li');
+		hash_len = hash_li.length;
+		for(var i=0; i<hash_len; i++){
+		  hash_li.eq(i).delay(i*3000).fadeIn(); //After every 3 seconds a new hashtag fades in
+		  hash_li.eq(i).delay(14500).animate({  //After 15 seconds a hashtag is removed, keeping 5 hashtags visible
+		    marginLeft:'+=300px',  //Hashtag separates to the right
+			opacity:0  //Hashtag disappears
+		  }, 500).fadeOut();  //Hashtag fades out from list
+		}
+	  });
+    });
+  </script>
+  </body>
+</html>
